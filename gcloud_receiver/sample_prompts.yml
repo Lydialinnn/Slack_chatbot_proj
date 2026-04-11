@@ -1,0 +1,257 @@
+# Sample prompts for the Slack bot interactive dropdown.
+# Each prompt has a display label, a natural language template with {placeholders},
+# and parameter definitions that drive the Slack modal form.
+#
+# Parameter types:
+#   date       — date picker in modal, default is a fixed date string or "yesterday"
+#   number     — plain text input (numeric), with a default value
+#   text       — plain text input, with optional placeholder
+#   select     — static select from hardcoded options list
+#   external   — external_select populated from BigQuery via /slack/options endpoint
+#                requires action_id to map to the correct BQ query
+#   multi_external — multi_external_select populated from BigQuery via /slack/options endpoint
+#                    allows selecting multiple values; requires action_id
+
+prompts:
+  - id: top_brands_by_category_ml
+    label: "Top brands by category (ML filter)"
+    template: "Show me the top {limit} selling brands under {categories} categories with ML sizes: {sku_ML}. From {start_date} to {end_date}, {data_source}, return category, brand, qty and net sales, and rank by {measure}"
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: categories
+        type: multi_external
+        label: "Categories (select one or more)"
+        action_id: "param_category"
+      - name: sku_ML
+        type: multi_external
+        label: "ML size (select one or more)"
+        action_id: "param_sku_ml"
+        optional: true
+      - name: measure
+        type: select
+        label: "Rank by"
+        default: "net sales"
+        options: ["net sales", "sales volume"]
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+      - name: limit
+        type: number
+        label: "How many brands"
+        default: 10
+
+  - id: top_brands_by_category_by_stamp
+    label: "Top brands by category by stamp"
+    template: "For the selected stamp types: {stamp_type}, show me the top {limit} brands under each of {categories}, from {start_date} to {end_date}, {data_source}, return stamp_type, category, brand, qty and net sales, and rank by {measure}"
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: stamp_type
+        type: multi_external
+        label: "Stamp types (select one or more)"
+        action_id: "param_stamp_type"
+      - name: categories
+        type: multi_external
+        label: "Categories (select one or more)"
+        action_id: "param_category"
+      - name: measure
+        type: select
+        label: "Measure"
+        default: "net sales"
+        options: ["net sales", "sales volume"]
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+      - name: limit
+        type: number
+        label: "How many brands"
+        default: 10
+
+  - id: sales_by_province_brand_filter
+    label: "Sales by province"
+    template: "Show me the total sales volume and net sales of each province, specifically for the selected brands: {brand_selection}, from {start_date} to {end_date}, {data_source}. Return only the province, sales volume, and net sales, and rank by {measure}."
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: brand_selection
+        type: multi_external
+        label: "brands (select one or more)"
+        action_id: "param_brand"
+        optional: true
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+      - name: measure
+        type: select
+        label: "Measure"
+        default: "net sales"
+        options: ["net sales", "sales volume"]
+
+
+  - id: top_brands_by_province
+    label: "Top brands by province"
+    template: "Show me the top {limit} selling brands in {province} from {start_date} to {end_date}, {data_source}, return province, brand, qty and net sales, and rank by {measure}"
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: province
+        type: multi_external
+        label: "Provinces (select one or more)"
+        action_id: "param_province"
+      - name: measure
+        type: select
+        label: "Rank by"
+        default: "net sales"
+        options: ["net sales", "sales volume"]
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+      - name: limit
+        type: number
+        label: "How many brands"
+        default: 10
+
+  - id: category_breakdown
+    label: "Sales by product category"
+    template: "Show me a sales breakdown by product category from {start_date} to {end_date}, {data_source}, return with both qty and net sales, and rank by {measure}"
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+      - name: measure
+        type: select
+        label: "Rank by"
+        default: "net sales"
+        options: ["net sales", "sales volume"]
+
+  - id: top_customer_sales
+    label: "Top customers by sales (brand filter)"
+    template: "Show me the top {limit} customers by {measure} for the selected brands: {brand_selection}, from {start_date} to {end_date}, {data_source}. Return only the customer name, sales volume, and net sales."
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+      - name: limit
+        type: number
+        label: "How many customers"
+        default: 10
+      - name: measure
+        type: select
+        label: "Rank by"
+        default: "net sales"
+        options: ["net sales", "sales volume"]
+      - name: brand_selection
+        type: multi_external
+        label: "Selected brands (select one or more)"
+        action_id: "param_brand"
+        optional: true
+
+
+  - id: brand_sales_detail
+    label: "Sales for a specific brand"
+    template: "Show me sales volume and net sales for the selected brands: {brand} from {start_date} to {end_date}, {data_source}"
+    parameters:
+      - name: data_source
+        type: select
+        label: "Data source"
+        default: "using STLTH + Valor data"
+        options: ["using STLTH + Valor data", "using Valor only data"]
+      - name: brand
+        type: multi_external
+        label: "Brand"
+        action_id: "param_brand"
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+
+  - id: sku_lookup_grouped
+    label: "Look up a specific product from stlth_valor dataset"
+    template: "Show me sales volume and net sales for the selected products: {product_name_group} from {start_date} to {end_date}, using STLTH + Valor data"
+    parameters:
+      - name: product_name_group
+        type: multi_external
+        label: "product_name_group"
+        action_id: "param_product_name_group"
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"
+
+  - id: sku_lookup_valor_only
+    label: "Look up a specific product from valor dataset"
+    template: "Show me sales volume and net sales for selected product {product_name_group_valor} from {start_date} to {end_date}, using Valor only data"
+    parameters:
+      - name: product_name_group_valor
+        type: multi_external
+        label: "product_name_group_valor"
+        action_id: "param_product_name_valor"
+      - name: start_date
+        type: date
+        label: "Start date"
+        default: "2026-01-01"
+      - name: end_date
+        type: date
+        label: "End date"
+        default: "yesterday"

@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: fct_valor_margin
+    description: Valor-only Shopify fulfilled sales, COGS, margin. Partitioned by fulfillment_date.
+    columns:
+      - name: fulfillment_date
+      - name: customer_id
+      - name: customer_name
+      - name: shipping_province
+      - name: shipping_city
+      - name: customer_category
+        description: LK, DropShip, Valor
+      - name: order_name
+      - name: valor_sku_base
+      - name: valor_product_title_grouped
+      - name: sku_ML
+      - name: excise_type
+        description: Stamp type
+      - name: salesrep
+      - name: category_formatted
+      - name: brand_category_key
+        description: Unique brand identifier
+      - name: net_qty
+        description: Cartons
+      - name: net_sales3
+        description: Net sales after all discounts (FX-adjusted)
+      - name: sku_cogs_fillna
+      - name: margin3
+        description: Net sales3 minus COGS
+      - name: unit_price
+        description: Promo price after discount
+      - name: _original_price
+      - name: is_promo
+
+  - name: mart_grouped_margin
+    description: STLTH and Valor merged sales. Partitioned by fulfillment_date.
+    columns:
+      - name: fulfillment_date
+      - name: customer_id
+      - name: customer_name
+      - name: customer_category
+      - name: customer_name_group
+        description: pre-fixed with entity name
+      - name: order_name
+      - name: sku_base
+      - name: product_title_grouped
+      - name: sku_ML
+      - name: excise_type
+      - name: category_formatted
+      - name: brand_category_key
+      - name: shipping_province
+      - name: unit_sold
+        description: Individual units
+      - name: unit_price_excl_excise
+      - name: net_sales3
+      - name: sku_cogs_fillna
+      - name: margin3
+      - name: margin_month_label
+      - name: bi_weekly_label

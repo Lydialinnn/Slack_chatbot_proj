@@ -1,0 +1,5 @@
+Flask==3.0.3
+slack_sdk==3.27.1
+google-cloud-aiplatform==1.44.0
+google-cloud-bigquery==3.20.1
+PyYAML==6.0.2
