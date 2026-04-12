@@ -1,12 +1,25 @@
 #!/bin/bash
 
-# 1. Load the local secrets if the file exists
-if [ -f .env ]; then
-    echo "Loading secrets from .env file..."
-    source .env
+# 1. Resolve the script's directory so the .env path works regardless of cwd
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/../.env"
+
+if [ -f "$ENV_FILE" ]; then
+    echo "Loading secrets from $ENV_FILE ..."
+    set -a
+    source "$ENV_FILE"
+    set +a
 else
     echo "No .env file found. Expecting variables from the CI/CD environment..."
 fi
+
+# Verify that required variables are set
+if [ -z "$SLACK_BOT_TOKEN" ]; then
+    echo "ERROR: SLACK_BOT_TOKEN is empty. Aborting deploy."
+    exit 1
+fi
+
+
 
 # 2. Deploy the Cloud Run service using the injected variables
 gcloud run deploy slack-bot-worker \
